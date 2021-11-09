@@ -1,0 +1,27 @@
+function_param_eval = (params,real_params,name){
+    $.writefile('eval.spwn',"return ({}) => ({}) => {}({})".fmt([
+        name,
+        ",\n".join(params.map(v => v + "=null")),
+        name,
+        ",".join(real_params),
+    ]))
+    return import 'eval.spwn'
+}
+
+impl @macro {
+    safe: (self, base = 8){
+        max = 2^base
+        letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" as @array
+        parameters = (self as @string).split("(")[1].split(")")[0].split(",").map(p=>p.split(':')[0].split('=')[0].trim()).filter(p=>p.length>0)
+        let current = parameters
+        while current.length <= max {
+            let this = ''
+            while (current has this) || this.length < 1 {
+                this += $.random(letters)
+            }
+            current.push(this)
+        }
+        func_name = current.pop()
+        return function_param_eval(current,parameters,func_name)(self)
+    }
+}

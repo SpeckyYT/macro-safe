@@ -1,0 +1,9 @@
+import '.'
+
+my_macro = (a,b,c){
+    for v in [a,b,c,a+b,a+c,b+c,a+b+c] {
+        $.print(v)
+    }
+}.safe()
+
+my_macro(9,10,21,420,69,1337,9001,99999) // thank me later
